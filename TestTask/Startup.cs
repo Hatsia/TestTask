@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using TestTask.Data;
 using TestTask.Models;
 
@@ -15,6 +16,7 @@ namespace TestTask
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -31,6 +33,8 @@ namespace TestTask
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddLogging(x => x.AddSerilog());
+
             services.AddControllersWithViews();
         }
 
@@ -43,7 +47,7 @@ namespace TestTask
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");                
+                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
