@@ -4,6 +4,8 @@ namespace TestTask.Models
 {
     public class User : IdentityUser
     {
+        public string LastName { get; set; }
+
         public int TeamId { get; set; }
 
         public Team Team { get; set; }
