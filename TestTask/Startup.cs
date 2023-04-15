@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using TestTask.Data;
-using TestTask.Models;
+using TestTask.Extensions;
+using TestTask.Models.Entities;
+using static TestTask.Constants.ConfigurationConstants;
 
 namespace TestTask
 {
@@ -24,17 +26,22 @@ namespace TestTask
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(DefaultConnection)));
 
             services.AddIdentity<User, IdentityRole>(opts => //Настройка обязательные опции
             {
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = false;
                 opts.User.RequireUniqueEmail = true;
+                opts.User.AllowedUserNameCharacters = UserNameCharacters;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddLogging(x => x.AddSerilog());
-
+            services.AddServices().AddLogging(x => x.AddSerilog());
+            services.AddRazorPages();
             services.AddControllersWithViews();
         }
 
@@ -56,7 +63,7 @@ namespace TestTask
             app.UseStaticFiles();
 
             app.UseRouting();
-            
+
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthentication();
@@ -68,6 +75,7 @@ namespace TestTask
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

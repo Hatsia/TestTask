@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TestTask.Models;
+using TestTask.Models.Entities;
 
 namespace TestTask.Data
 {

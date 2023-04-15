@@ -1,6 +1,4 @@
-using System;
-
-namespace TestTask.Models
+namespace TestTask.Models.ViewModels
 {
     public class ErrorViewModel
     {
