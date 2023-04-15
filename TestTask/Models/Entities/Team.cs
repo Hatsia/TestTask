@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestTask.Models
+namespace TestTask.Models.Entities
 {
     public class Team
     {
