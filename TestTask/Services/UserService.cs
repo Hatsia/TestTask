@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TestTask.Interfaces;
 using TestTask.Models.Entities;
@@ -10,11 +16,13 @@ namespace TestTask.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IRoleService _roleService;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserService(UserManager<User> userManager, IRoleService roleService)
+        public UserService(UserManager<User> userManager, IRoleService roleService, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleService = roleService;
+            _signInManager = signInManager;
         }
 
         public async Task<bool> RegistrationAsync(RegistrationRequest request)
@@ -30,6 +38,7 @@ namespace TestTask.Services
 
             if (isSuccessful)
             {
+                await _signInManager.SignInAsync(user, false);
                 return await _roleService.AddOrCreateRoleForUserAsync(user);
             }
 
@@ -44,6 +53,49 @@ namespace TestTask.Services
                 return true;
 
             return false;
+        }
+
+        public async Task<SignInResult> LoginAsync(LoginRequest request, HttpContext context)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, request.RememberMe, false);
+
+            if (result.Succeeded)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                };
+
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1),
+                    IsPersistent = request.RememberMe
+                };
+
+                await context.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+            }
+
+            return result;
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

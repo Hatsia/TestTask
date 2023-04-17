@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System;
 using TestTask.Data;
 using TestTask.Extensions;
 using TestTask.Models.Entities;
@@ -41,6 +43,13 @@ namespace TestTask
                 .AddDefaultTokenProviders();
 
             services.AddServices().AddLogging(x => x.AddSerilog());
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => 
+            { 
+                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/User/Login");
+            });
+            services.AddAuthorization();
+            
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
@@ -67,8 +76,10 @@ namespace TestTask
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthentication();
+            
+            app.UseAuthorization();       
 
-            app.UseAuthorization();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {
