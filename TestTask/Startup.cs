@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
 using TestTask.Data;
 using TestTask.Extensions;
 using TestTask.Models.Entities;
@@ -30,7 +29,7 @@ namespace TestTask
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(DefaultConnection)));
 
-            services.AddIdentity<User, IdentityRole>(opts => //Настройка обязательные опции
+            services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
@@ -44,12 +43,12 @@ namespace TestTask
 
             services.AddServices().AddLogging(x => x.AddSerilog());
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => 
-            { 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
                 options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/User/Login");
             });
             services.AddAuthorization();
-            
+
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
@@ -68,7 +67,7 @@ namespace TestTask
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -76,8 +75,8 @@ namespace TestTask
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthentication();
-            
-            app.UseAuthorization();       
+
+            app.UseAuthorization();
 
             app.UseCookiePolicy();
 

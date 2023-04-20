@@ -13,11 +13,24 @@ namespace TestTask.Interfaces
 
         Task<SignInResult> LoginAsync(LoginRequest request, HttpContext context);
 
-        Task<User> GetUserByEmailAsync(string email);
-        Task<User> EditUserAsync(EditUserRequest request);
-        Task<string> DeleteUserByIdAsync(string id);
-        Task<List<User>> GetAllAsync();
-
         Task LogoutAsync();
+
+        Task<List<User>> GetAllUserAsync();
+
+        Task<User> GetUserByEmailAsync(string email);
+
+        Task<User> GetUserByIdAsync(string id);
+
+        Task<User> EditUserAsync(EditUserRequest request);
+
+        Task<string> DeleteUserByIdAsync(string id);
+
+        Task<bool> IsInRoleAsync(User user, string role);
+
+        Task<IList<string>> GetUserRolesAsync(User user);
+
+        Task<IdentityResult> AddRolesToUserAsync(User user, IEnumerable<string> roles);
+
+        Task<IdentityResult> RemoveRolesFromUserAsync(User user, IList<string> roles);
     }
 }

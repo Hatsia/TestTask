@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestTask.Enums;
 using TestTask.Interfaces;
@@ -18,12 +20,25 @@ namespace TestTask.Services
             _roleManager = roleManager;
         }
 
+        public async Task<List<IdentityRole>> GetAllRolesAsync() => await _roleManager.Roles.ToListAsync();
+
+        public async Task CreateRoleAsync(string roleName)
+        {
+            await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
+        }
+
+        public async Task DeleteRoleByIdAsync(string id)
+        {
+            await _roleManager.DeleteAsync(await _roleManager.FindByIdAsync(id));
+        }
+
         public async Task<bool> AddOrCreateRoleForUserAsync(User user, string role = "Basic")
         {
             if (Enum.IsDefined(typeof(RoleTypes), role) == false)
             {
                 return false;
             }
+
             if (await _roleManager.RoleExistsAsync(role) == false)
             {
                 var identityRole = new IdentityRole { Name = role };
