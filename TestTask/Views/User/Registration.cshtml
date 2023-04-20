@@ -1,31 +1,40 @@
-﻿@model UserViewModel
+﻿@model RegistrationRequest
 @{
     ViewData["Title"] = "Registration";
 }
 
 <h1>Registration</h1>
-<div>
-    <h2>Registration</h2>
-    <p>заполните следующие поля:</p>
-    <form method="post" asp-action="Registration" asp-controller="User">
-        <table>
-            <tr>
-                <td>Имя:</td>
-                <td><input type="text" name="FirstName" /> </td>
-            </tr>
-            <tr>
-                <td>LastName:</td>
-                <td><input type="text" name="Lastname" /></td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td><input type="text" name="Email" /></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type="text" name="Password" /></td>
-            </tr>
-            <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
-        </table>
-    </form>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form method="post" asp-action="Registration" asp-controller="User">
+                <hr/>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group"><div style="color: red;">@ViewBag.Message</div></div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Register User</button>
+                </div>
+            </form>
+        </section>
+    </div>
 </div>

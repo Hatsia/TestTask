@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -58,8 +59,14 @@ namespace TestTask.Services
         public async Task<SignInResult> LoginAsync(LoginRequest request, HttpContext context)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, request.RememberMe, false);
+            
+            if(user == null)
+            {
+                return SignInResult.Failed;
+            }
 
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, request.RememberMe, false);
+            
             if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -97,5 +104,40 @@ namespace TestTask.Services
         {
             await _signInManager.SignOutAsync();
         }
+
+
+        public async Task<User> EditUserAsync(EditUserRequest request)
+        {
+            var currentUser = await _userManager.FindByEmailAsync(request.Email);
+
+            currentUser.Email = request.Email;
+            currentUser.FirstName = request.FirstName;
+            currentUser.LastName = request.LastName;
+            
+            await _userManager.RemovePasswordAsync(currentUser);
+            await _userManager.AddPasswordAsync(currentUser, request.Password);
+            await _userManager.UpdateAsync(currentUser);
+            
+            return currentUser;
+        }
+
+        public async Task<string> DeleteUserByIdAsync(string id)
+        {
+            var isResult = await _userManager.DeleteAsync(_userManager.FindByIdAsync(id).Result);
+            if (isResult.Succeeded)
+            {
+                return "User deleted";
+            }
+
+            return "Error";
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email) => await _userManager.FindByEmailAsync(email);
+        public async Task<List<User>> GetAllAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return users;
+        }
+
     }
 }
