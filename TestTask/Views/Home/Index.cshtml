@@ -1,10 +1,24 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using TestTask.Models.Entities;
+@inject SignInManager<User> SignInManager
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
 
-<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Redirect">Регистрация</a>
+    <h1 class="display-4">Welcome to tesk task!</h1>
+
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p>Hello @User.Identity.Name!</p>
+    }
+    else
+    {
+        <p>Register or log in to your account!</p>
+    }
+
+
+
+</div>
