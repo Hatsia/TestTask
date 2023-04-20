@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestTask.Enums;
 using TestTask.Interfaces;
@@ -16,6 +19,18 @@ namespace TestTask.Services
         {
             _userManager = userManager;
             _roleManager = roleManager;
+        }
+
+        public async Task<List<IdentityRole>> GetRolesAsync() => await _roleManager.Roles.ToListAsync();
+
+        public async Task CreateRoleAsync(string roleName)
+        {
+            await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
+        }
+
+        public async Task DeleteRoleByIdAsync(string id)
+        {
+            await _roleManager.DeleteAsync(await _roleManager.FindByIdAsync(id));
         }
 
         public async Task<bool> AddOrCreateRoleForUserAsync(User user, string role = "Basic")

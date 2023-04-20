@@ -133,11 +133,17 @@ namespace TestTask.Services
         }
 
         public async Task<User> GetUserByEmailAsync(string email) => await _userManager.FindByEmailAsync(email);
-        public async Task<List<User>> GetAllAsync()
+        public async Task<User> GetUserByIdAsync(string id) => await _userManager.FindByIdAsync(id);
+        public async Task<List<User>> GetAllUserAsync()
         {
             var users = await _userManager.Users.ToListAsync();
             return users;
         }
+        public async Task<bool> IsInRoleAsync(User user, string role) => await _userManager.IsInRoleAsync(user, role);
+        public async Task<IList<string>> GetUserRolesAsync(User user) => await _userManager.GetRolesAsync(user);
 
+        public async Task<IdentityResult> AddToRolesAsync(User user, IEnumerable<string> roles) => await _userManager.AddToRolesAsync(user, roles);
+        public async Task<IdentityResult> RemoveFromRolesAsync(User user, IList<string> roles) => await _userManager.RemoveFromRolesAsync(user, roles);
+        
     }
 }

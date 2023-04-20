@@ -142,7 +142,7 @@ namespace TestTask.Controllers
         [HttpGet]
         public async Task<ViewResult> GetAllAsync()
         {
-            var users = await _userService.GetAllAsync();
+            var users = await _userService.GetAllUserAsync();
             return View(users);
         }
     }
