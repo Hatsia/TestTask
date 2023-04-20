@@ -7,9 +7,12 @@ namespace TestTask.Interfaces
 {
     public interface IRoleService
     {
-        Task<List<IdentityRole>> GetRolesAsync();
+        Task<List<IdentityRole>> GetAllRolesAsync();
+
         Task CreateRoleAsync(string roleName);
+
         Task DeleteRoleByIdAsync(string id);
+
         Task<bool> AddOrCreateRoleForUserAsync(User user, string role = "Basic");
 
     }

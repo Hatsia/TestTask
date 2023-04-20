@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TestTask.Interfaces;
-using TestTask.Models.Entities;
 using TestTask.Models.RequestModels;
-using TestTask.Models.ViewModels;
 
 namespace TestTask.Controllers
 {
@@ -25,10 +22,13 @@ namespace TestTask.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
+
+        [AllowAnonymous]
         public IActionResult Registration()
         {
             return View();
@@ -41,6 +41,7 @@ namespace TestTask.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] LoginRequest request, string returnUrl)
         {
             returnUrl ??= Url.Content("~/");
@@ -58,21 +59,25 @@ namespace TestTask.Controllers
             else
             {
                 ViewBag.Message = "Wrong name or password";
+
                 return View();
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            // удаляем аутентификационные куки
             await _userService.LogoutAsync();
+
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Registration([FromForm] RegistrationRequest request)
         {
             var result = await _userService.RegistrationAsync(request);
+
             if (result == true)
             {
                 return Redirect("/User/Login");
@@ -90,12 +95,12 @@ namespace TestTask.Controllers
         public async Task<ViewResult> Edit()
         {
             var user = await _userService.GetUserByEmailAsync(HttpContext.User.FindFirst(x => x.Type == ClaimTypes.Email).Value);
-            EditUserRequest request = new EditUserRequest()
+            
+            var request = new EditUserRequest()
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName,
-                Password = "Enter new password"
+                LastName = user.LastName
             };
 
             return View(request);
@@ -110,7 +115,9 @@ namespace TestTask.Controllers
                 var userId = HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
                 ViewBag.Message = await _userService.EditUserAsync(request);
+
                 await _userService.LogoutAsync();
+
                 return Redirect("/User/Login");
             }
 
@@ -121,28 +128,31 @@ namespace TestTask.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
-            // Проверка на одмэна
-            var isAdmin = HttpContext.User.IsInRole("admin");
-            // Получение id из кукисав
+            var isAdmin = HttpContext.User.IsInRole("admin");   
             var userId = HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
             if (isAdmin)
             {
                 ViewBag.Message = await _userService.DeleteUserByIdAsync(id);
+
                 return View();
             }
             else
             {
                 ViewBag.Message = await _userService.DeleteUserByIdAsync(userId);
+
                 await _userService.LogoutAsync();
+
                 return Redirect("/Home/Index");
             }
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ViewResult> GetAllAsync()
         {
             var users = await _userService.GetAllUserAsync();
+
             return View(users);
         }
     }

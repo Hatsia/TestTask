@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace TestTask.Services
             _roleManager = roleManager;
         }
 
-        public async Task<List<IdentityRole>> GetRolesAsync() => await _roleManager.Roles.ToListAsync();
+        public async Task<List<IdentityRole>> GetAllRolesAsync() => await _roleManager.Roles.ToListAsync();
 
         public async Task CreateRoleAsync(string roleName)
         {
@@ -39,6 +38,7 @@ namespace TestTask.Services
             {
                 return false;
             }
+
             if (await _roleManager.RoleExistsAsync(role) == false)
             {
                 var identityRole = new IdentityRole { Name = role };

@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TestTask.Interfaces;
 
@@ -22,7 +18,7 @@ namespace TestTask.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _roleService.GetRolesAsync());
+            return View(await _roleService.GetAllRolesAsync());
         }
 
         [HttpPost]
@@ -33,6 +29,7 @@ namespace TestTask.Controllers
             {
                 await _roleService.CreateRoleAsync(roleName);
             }
+
             return RedirectToAction("Index");
         }
 
@@ -44,6 +41,7 @@ namespace TestTask.Controllers
             {
                 await _roleService.DeleteRoleByIdAsync(id);
             }
+
             return RedirectToAction("Index");
         }
     }
