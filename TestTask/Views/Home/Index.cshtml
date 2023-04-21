@@ -10,16 +10,20 @@
     <h1 class="display-4">Welcome to tesk task!</h1>
 
 
-    @if (SignInManager.IsSignedIn(User))
+    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
     {
         <p>Hello @User.Identity.Name!</p>
-        <p>You can manage User roles and manage role</p>
+        <p>You can manage User roles and manage role!</p>
+    }
+    else if (SignInManager.IsSignedIn(User))
+    {
+        <p>Hello @User.Identity.Name!</p>
+        <p>You can choose your team!</p>
     }
     else
     {
         <p>Register or log in to your account!</p>
     }
-
 
 
 </div>

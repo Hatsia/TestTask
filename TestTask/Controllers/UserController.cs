@@ -94,7 +94,7 @@ namespace TestTask.Controllers
         [Authorize]
         public async Task<ViewResult> Edit()
         {
-            var user = await _userService.GetUserByEmailAsync(HttpContext.User.FindFirst(x => x.Type == ClaimTypes.Email).Value);
+            var user = await _userService.GetUserByEmailAsync(User.FindFirst(x => x.Type == ClaimTypes.Email).Value);
             
             var request = new EditUserRequest()
             {
