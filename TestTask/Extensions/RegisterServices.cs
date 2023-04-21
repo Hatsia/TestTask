@@ -10,6 +10,7 @@ namespace TestTask.Extensions
         {
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITeamService, TeamService>();
 
             return services;
         }
