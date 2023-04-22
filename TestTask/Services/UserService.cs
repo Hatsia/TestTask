@@ -5,25 +5,32 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using TestTask.Data;
 using TestTask.Interfaces;
 using TestTask.Models.Entities;
+using TestTask.Models.FilterModels;
 using TestTask.Models.RequestModels;
+using TestTask.Models.ViewModels;
 
 namespace TestTask.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> _userManager;
         private readonly IRoleService _roleService;
+        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationDbContext _context;
 
-        public UserService(UserManager<User> userManager, IRoleService roleService, SignInManager<User> signInManager)
+        public UserService(UserManager<User> userManager, IRoleService roleService, SignInManager<User> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleService = roleService;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public async Task<bool> RegistrationAsync(RegistrationRequest request)
@@ -98,6 +105,12 @@ namespace TestTask.Services
 
             return users;
         }
+        public async Task<List<UserFilterModel>> GetAllUsersFMAsync()
+        {
+            var users = await _context.Users.AsNoTracking().Include(x => x.Team).ToListAsync();
+
+            return ParseUsersToUsersFM(users);
+        }
 
         public async Task<User> EditUserAsync(EditUserRequest request)
         {
@@ -138,6 +151,16 @@ namespace TestTask.Services
 
         public async Task<IdentityResult> RemoveRolesFromUserAsync(User user, IList<string> roles) => await _userManager.RemoveFromRolesAsync(user, roles);
 
+        public async Task<List<UserFilterModel>> GetUsersByFilterAsync(UserFilterModel filter)
+        {
+            var users = _context.Users.Include(x => x.Team).AsQueryable();
+
+            if (filter != null)
+                users = GetFiltredUsers(users, filter);
+
+            return ParseUsersToUsersFM(await users.ToListAsync());
+        }
+
         private async Task<bool> CreateUserAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
@@ -146,6 +169,45 @@ namespace TestTask.Services
                 return true;
 
             return false;
+        }
+
+        private IQueryable<User> GetFiltredUsers(IQueryable<User> users, UserFilterModel filter)
+        {
+            if (!string.IsNullOrWhiteSpace(filter.Email))
+                users = users.Where(x => x.Email == filter.Email);
+            if (!string.IsNullOrWhiteSpace(filter.FirstName))
+                users = users.Where(x => x.FirstName == filter.FirstName);
+            if (!string.IsNullOrWhiteSpace(filter.LastName))
+                users = users.Where(x => x.LastName == filter.LastName);
+            if (filter.TeamId != null)
+                users = users.Where(x => x.TeamId == filter.TeamId);
+
+            return users;
+        }
+
+        private static List<UserFilterModel> ParseUsersToUsersFM(List<User> users)
+        {
+            var usersVM = new List<UserFilterModel>();
+
+            foreach (var user in users)
+            {
+                usersVM.Add(ParseUserToUserFilterFM(user));
+            }
+
+            return usersVM;
+        }
+
+        private static UserFilterModel ParseUserToUserFilterFM(User user)
+        {
+            var userVM = new UserFilterModel
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                TeamId = user.TeamId
+            };
+
+            return userVM;
         }
     }
 }

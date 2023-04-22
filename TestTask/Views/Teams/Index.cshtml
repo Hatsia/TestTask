@@ -1,4 +1,7 @@
 ﻿@model List<TeamViewModel>
+@using Microsoft.AspNetCore.Identity
+@using TestTask.Models.Entities;
+@inject SignInManager<User> SignInManager
 
 @{
     ViewData["Title"] = "Index";
@@ -7,9 +10,14 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <p>
+        <div>
+            <a class="btn btn-primary" asp-action="Create">Create New Team</a>
+        </div>
+    </p>
+}
 @if (TempData.Any())
 {
     <div class="alert alert-info">
@@ -46,11 +54,14 @@
                     @Html.DisplayFor(modelItem => item.Users.Count)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                    <a asp-action="JoinTheTeam" asp-route-id="@item.Id">Join</a> |
-                    <a asp-action="LeaveTheTeam" asp-route-id="@item.Id">Leave</a>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span> | </span>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> <span> | </span>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> <span> | </span>
+                    <a asp-action="JoinTheTeam" asp-route-id="@item.Id"> Join </a> |
+                    <a asp-action="LeaveTheTeam" asp-route-id="@item.Id"> Leave </a>
                 </td>
             </tr>
         }

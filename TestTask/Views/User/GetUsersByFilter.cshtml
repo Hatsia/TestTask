@@ -1,0 +1,62 @@
+﻿@model List<TestTask.Models.FilterModels.UserFilterModel>
+
+@{
+    ViewBag.Title = "Каталог пользователей";
+}
+
+<h2>Каталог пользователей</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <section>
+            <form method="post" asp-action="GetUsersByFilter">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="Email">Email:</label>
+                            <input type="text" class="form-control" id="Email" name="Email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="FirstName">First Name:</label>
+                            <input type="text" class="form-control" id="FirstName" name="FirstName" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="LastName">Last Name:</label>
+                            <input type="text" class="form-control" id="LastName" name="LastName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="TeamId">Team Id:</label>
+                            <input type="text" class="form-control" id="TeamId" name="TeamId" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <tr>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Team Id</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Email</td>
+            <td>@item.FirstName</td>
+            <td>@item.LastName</td>
+            <td>@item.TeamId</td>
+        </tr>
+    }
+</table>

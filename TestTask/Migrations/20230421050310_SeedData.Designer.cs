@@ -2,14 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using TestTask.Data;
 
 namespace TestTask.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230421050310_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,15 +48,15 @@ namespace TestTask.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3770a30e-e8f4-4b1f-bbcf-78ab1e32af59",
-                            ConcurrencyStamp = "29f58103-86df-4161-98b2-9a800967eeb6",
+                            Id = "9e1b619f-aac7-4ab1-b7a3-8459b42f628b",
+                            ConcurrencyStamp = "fc6ab58f-da6e-4295-b06b-278090b6ed06",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ae7265c1-41d5-4431-9d4b-f78f1f21405a",
-                            ConcurrencyStamp = "81ee82f5-9e0a-4638-b6ce-f7dc8bb01a69",
+                            Id = "fb28c681-e980-48b4-879b-5ce10fb04e5f",
+                            ConcurrencyStamp = "f9af14d0-8dbf-4a9e-afea-df6fa86bc01f",
                             Name = "Basic",
                             NormalizedName = "BASIC"
                         });
@@ -147,13 +149,13 @@ namespace TestTask.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "ab9a725f-964c-4941-aa06-0c663111849d",
-                            RoleId = "3770a30e-e8f4-4b1f-bbcf-78ab1e32af59"
+                            UserId = "d77c3597-37aa-4270-8af1-b7cde64307bf",
+                            RoleId = "9e1b619f-aac7-4ab1-b7a3-8459b42f628b"
                         },
                         new
                         {
-                            UserId = "0f859172-f536-4582-a19c-977239af637c",
-                            RoleId = "ae7265c1-41d5-4431-9d4b-f78f1f21405a"
+                            UserId = "4846352d-ff1e-4529-842d-2aa70bdb8e05",
+                            RoleId = "fb28c681-e980-48b4-879b-5ce10fb04e5f"
                         });
                 });
 
@@ -281,17 +283,17 @@ namespace TestTask.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ab9a725f-964c-4941-aa06-0c663111849d",
+                            Id = "d77c3597-37aa-4270-8af1-b7cde64307bf",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1db8de03-0d7b-45e7-ad1d-493f88fa475f",
-                            Email = "admin@gmail.com",
+                            ConcurrencyStamp = "c9312e52-483d-4bfd-856e-874020f19df4",
+                            Email = "admin@gamil.com",
                             EmailConfirmed = false,
                             FirstName = "Peter",
                             LastName = "Petrov",
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedEmail = "ADMIN@GAMIL.COM",
                             NormalizedUserName = "PETER PETROV",
-                            PasswordHash = "AQAAAAEAACcQAAAAEH9qBj3Vbplr7mdOcjCBmVfkAwaYGaRWUsw+fOZVaTcayObPd/pNM9reZ7C1QccX8Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKUrUJpg08RTUyneiML1FrbPMZUDn/Btqrpyy5DsCm7RLQrP18+vK8BHRdYpDPckCg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "E5BBMDK3I3PX6MZCUDSP2TGQMJNHIOU7",
                             TwoFactorEnabled = false,
@@ -299,17 +301,17 @@ namespace TestTask.Migrations
                         },
                         new
                         {
-                            Id = "0f859172-f536-4582-a19c-977239af637c",
+                            Id = "4846352d-ff1e-4529-842d-2aa70bdb8e05",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8e34c5c8-d639-4646-89a8-cc9d7c754a0e",
-                            Email = "bory@gmail.com",
+                            ConcurrencyStamp = "58cb5f60-6536-4d1c-b4ab-f78f2f71cfd8",
+                            Email = "bory@gamil.com",
                             EmailConfirmed = false,
                             FirstName = "Boris",
                             LastName = "Britva",
                             LockoutEnabled = false,
-                            NormalizedEmail = "BORY@GMAIL.COM",
+                            NormalizedEmail = "BORY@GAMIL.COM",
                             NormalizedUserName = "BORIS BRITVA",
-                            PasswordHash = "AQAAAAEAACcQAAAAECRezigtqtOgksdXoCspGigW7WbgueCeH/+W8cUOR29Tq/nPkqJg9KBo/pLZt7dNZg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHwEd5vT2gklX1DrH3pPP2TytUJj/vIayTrCKswprmy7juJvPnqMUYpDZ4T2CANEhg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "M3ZDA3WQP6J2ZVGKBIZHOE7GKC4BR2ZF",
                             TwoFactorEnabled = false,

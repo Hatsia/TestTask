@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TestTask.Interfaces;
+using TestTask.Models.FilterModels;
 using TestTask.Models.RequestModels;
 
 namespace TestTask.Controllers
@@ -38,6 +39,11 @@ namespace TestTask.Controllers
         public IActionResult Delete()
         {
             return View();
+        }
+
+        public async Task<IActionResult> GetUsersByFilter()
+        {
+            return View(await _userService.GetAllUsersFMAsync());
         }
 
         [HttpPost]
@@ -92,10 +98,10 @@ namespace TestTask.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ViewResult> Edit()
+        public async Task<IActionResult> Edit()
         {
             var user = await _userService.GetUserByEmailAsync(User.FindFirst(x => x.Type == ClaimTypes.Email).Value);
-            
+
             var request = new EditUserRequest()
             {
                 Email = user.Email,
@@ -128,7 +134,7 @@ namespace TestTask.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
-            var isAdmin = HttpContext.User.IsInRole("admin");   
+            var isAdmin = HttpContext.User.IsInRole("admin");
             var userId = HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
             if (isAdmin)
@@ -148,12 +154,15 @@ namespace TestTask.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<ViewResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var users = await _userService.GetAllUserAsync();
+            return View(await _userService.GetAllUserAsync());
+        }
 
-            return View(users);
+        [HttpPost]
+        public async Task<IActionResult> GetUsersByFilter([FromForm] UserFilterModel filter)
+        {
+            return View(await _userService.GetUsersByFilterAsync(filter));
         }
     }
 }
