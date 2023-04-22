@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestTask.Models.Entities;
+using TestTask.Models.FilterModels;
 using TestTask.Models.RequestModels;
 
 namespace TestTask.Interfaces
@@ -32,5 +33,9 @@ namespace TestTask.Interfaces
         Task<IdentityResult> AddRolesToUserAsync(User user, IEnumerable<string> roles);
 
         Task<IdentityResult> RemoveRolesFromUserAsync(User user, IList<string> roles);
+
+        Task<List<UserFilterModel>> GetAllUsersFMAsync();
+
+        Task<List<UserFilterModel>> GetUsersByFilterAsync(UserFilterModel filter);
     }
 }

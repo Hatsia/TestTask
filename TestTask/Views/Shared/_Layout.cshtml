@@ -31,6 +31,15 @@
                                 <a class="nav-link text-dark" asp-controller="Role" asp-action="Index">Role Manager</a>
                             </li>
                         }
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="GetUsersByFilter">Filter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Teams" asp-action="Index">Teams</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
                         @if (SignInManager.IsSignedIn(User))

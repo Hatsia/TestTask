@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TestTask.Extensions;
 using TestTask.Models.Entities;
 
 namespace TestTask.Data
@@ -21,6 +22,12 @@ namespace TestTask.Data
         {
             builder.EnableSensitiveDataLogging();
             builder.UseLoggerFactory(_loggerFactory);
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.SeedData();
         }
     }
 }

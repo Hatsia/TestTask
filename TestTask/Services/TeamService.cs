@@ -46,7 +46,12 @@ namespace TestTask.Services
 
         public async Task<TeamViewModel> UpdateTeamAsync(UpdateTeamRequest request)
         {
-            var team = new Team { Id = request.Id, Name = request.Name, Users = request.Users };
+            var team = new Team { Id = request.Id, Name = request.Name};
+            
+            if(request.Users != null)
+            {
+                team.Users = request.Users;
+            }
 
             await Task.Run(() => _context.Teams.Update(team));
             await _context.SaveChangesAsync();
@@ -120,10 +125,12 @@ namespace TestTask.Services
         private static TeamViewModel ParseTeamToTeamVM(Team team)
         {
             var usersVM = new List<UserViewModel>();
-
-            foreach (var user in team.Users)
+            if(team.Users != null)
             {
-                usersVM.Add(new UserViewModel { Email = user.Email, UserName = user.UserName });
+                foreach (var user in team.Users)
+                {
+                    usersVM.Add(new UserViewModel { Email = user.Email, UserName = user.UserName });
+                }
             }
 
             var teamVM = new TeamViewModel
